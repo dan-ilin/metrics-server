@@ -6,7 +6,7 @@ VALUES (:timestamp, :name, :value)
 
 -- :name get-metric-by-timestamp :? :*
 -- :doc retrieve metric given the timestamp
-SELECT * FROM metrics
+SELECT name, value, timestamp FROM metrics
 WHERE name = :name AND timestamp = :timestamp
 
 -- :name sum-metric-by-time-range :? :1
@@ -17,5 +17,5 @@ AND timestamp BETWEEN :from AND :to
 
 -- :name get-metrics :? :*
 -- :doc retrieve a page of metrics ordered by timestamp
-SELECT * FROM metrics
+SELECT name, value, timestamp FROM metrics
 ORDER BY timestamp LIMIT :limit OFFSET :offset

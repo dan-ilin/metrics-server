@@ -5,8 +5,7 @@
             [metrics-server.db.core :as db]))
 
 (s/defschema Metric
-  {(s/optional-key :id) s/Int
-   :name                s/Str
+  {:name                s/Str
    :value               s/Num
    :timestamp           s/Inst})
 
@@ -29,6 +28,13 @@
                        :body [metric Metric]
                        :summary "Insert single metric into database."
                        (ok (db/insert-metric! metric)))
+
+                 (POST "/metrics" []
+                       :return nil
+                       :body [metrics [Metric]]
+                       :summary "Insert multiple metrics into database."
+                       (ok (doseq [metric metrics]
+                             (db/insert-metric! metric))))
 
                  (GET "/metrics" []
                       :return [Metric]

@@ -17,12 +17,10 @@
     (migrations/migrate ["migrate"] (env :database-url))
     (f)))
 
-(def input-metric
+(def metric
   {:timestamp (new Date 1462380001)
    :name      "Test"
    :value     10.0})
-
-(def output-metric (assoc input-metric :id 1))
 
 (deftest test-metrics
   (jdbc/with-db-transaction
@@ -30,22 +28,22 @@
     (jdbc/db-set-rollback-only! t-conn)
     (testing "insert-metric"
       (is (= 1
-             (db/insert-metric! t-conn input-metric))))
+             (db/insert-metric! t-conn metric))))
     (testing "get-metric-by-timestamp"
-      (is (= output-metric
+      (is (= metric
              (nth (db/get-metric-by-timestamp
                     t-conn
-                    {:name      (:name input-metric)
-                     :timestamp (:timestamp input-metric)}) 0))))
+                    {:name      (:name metric)
+                     :timestamp (:timestamp metric)}) 0))))
     (testing "sum-metric-by-time-range"
       (is (= {:sum 10.0}
              (db/sum-metric-by-time-range
                t-conn
-               {:name (:name input-metric)
+               {:name (:name metric)
                 :from (new Date 1462380000)
                 :to   (new Date 1462390000)}))))
     (testing "get-metrics-page"
-      (is (= output-metric
+      (is (= metric
              (nth (db/get-metrics
                     t-conn
                     {:limit  1
