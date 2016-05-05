@@ -2,12 +2,13 @@
   (:require [ring.util.http-response :refer :all]
             [compojure.api.sweet :refer :all]
             [schema.core :as s]
-            [metrics-server.db.core :as db]))
+            [metrics-server.db.core :as db]
+            [clojure.java.jdbc :as jdbc]))
 
 (s/defschema Metric
-  {:name                s/Str
-   :value               s/Num
-   :timestamp           s/Inst})
+  {:name      s/Str
+   :value     s/Num
+   :timestamp s/Inst})
 
 (defn get-page-params [page-num]
   (let [page-size 50]
@@ -24,17 +25,21 @@
                  :tags ["metrics"]
 
                  (POST "/metric" []
-                       :return Integer
+                       :return s/Int
                        :body [metric Metric]
                        :summary "Insert single metric into database."
                        (ok (db/insert-metric! metric)))
 
                  (POST "/metrics" []
-                       :return nil
+                       :return s/Int
                        :body [metrics [Metric]]
                        :summary "Insert multiple metrics into database."
-                       (ok (doseq [metric metrics]
-                             (db/insert-metric! metric))))
+                       (ok (jdbc/with-db-transaction
+                             [t-conn db/*db*]
+                             (reduce
+                               #(+ %1 %2)
+                               0
+                               (map (partial db/insert-metric! t-conn) metrics)))))
 
                  (GET "/metrics" []
                       :return [Metric]
