@@ -20,7 +20,7 @@
                    :spec "/swagger.json"
                    :data {:info {:version     "1.0.0"
                                  :title       "Metrics API"
-                                 :description "Services for inserting and querying metrics."}}}}
+                                 :description "Service for inserting and querying metrics."}}}}
         (context "/api" []
                  :tags ["metrics"]
 
@@ -50,16 +50,16 @@
                  (GET "/metric/:name" []
                       :return [Metric]
                       :path-params [name :- s/Str]
-                      :query-params [timestamp :- s/Inst]
+                      :query-params [time :- s/Inst]
                       :summary "Get metric by name at given time."
                       (ok (db/get-metric-by-timestamp {:name      name
-                                                       :timestamp timestamp})))
+                                                       :timestamp time})))
 
                  (GET "/metric/:name/sum" []
                       :return s/Num
                       :path-params [name :- s/Str]
                       :query-params [from :- s/Inst to :- s/Inst]
-                      :summary "Get aggregate sum of metric values for given time range."
+                      :summary "Get sum of metric values over given time range."
                       (ok (:sum (db/sum-metric-by-time-range {:name name
                                                               :from from
                                                               :to   to}))))
@@ -68,7 +68,34 @@
                       :return s/Num
                       :path-params [name :- s/Str]
                       :query-params [from :- s/Inst to :- s/Inst]
-                      :summary "Get aggregate average of metric values for given time range."
+                      :summary "Get average metric value over given time range."
                       (ok (:sum (db/avg-metric-by-time-range {:name name
+                                                              :from from
+                                                              :to   to}))))
+
+                 (GET "/metric/:name/count" []
+                      :return s/Num
+                      :path-params [name :- s/Str]
+                      :query-params [from :- s/Inst to :- s/Inst]
+                      :summary "Get count of metrics taken over given time range."
+                      (ok (:sum (db/count-metric-by-time-range {:name name
+                                                              :from from
+                                                              :to   to}))))
+
+                 (GET "/metric/:name/min" []
+                      :return s/Num
+                      :path-params [name :- s/Str]
+                      :query-params [from :- s/Inst to :- s/Inst]
+                      :summary "Get minimum metric value over given time range."
+                      (ok (:sum (db/min-metric-by-time-range {:name name
+                                                              :from from
+                                                              :to   to}))))
+
+                 (GET "/metric/:name/max" []
+                      :return s/Num
+                      :path-params [name :- s/Str]
+                      :query-params [from :- s/Inst to :- s/Inst]
+                      :summary "Get maximum metric values over given time range."
+                      (ok (:sum (db/max-metric-by-time-range {:name name
                                                               :from from
                                                               :to   to}))))))
