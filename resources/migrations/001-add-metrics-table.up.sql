@@ -1,8 +1,8 @@
 CREATE TABLE metrics(
-    id INTEGER PRIMARY KEY NOT NULL,
+    id BIGSERIAL PRIMARY KEY,
     timestamp TIMESTAMP NOT NULL,
     name TEXT NOT NULL,
-    value DECIMAL NOT NULL
+    value DOUBLE PRECISION NOT NULL
 );
 --;;
 CREATE INDEX metrics_timestamp_idx ON metrics(timestamp);

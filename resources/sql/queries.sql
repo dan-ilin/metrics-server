@@ -1,21 +1,21 @@
--- :name create-user! :! :n
--- :doc creates a new user record
-INSERT INTO users
-(id, first_name, last_name, email, pass)
-VALUES (:id, :first_name, :last_name, :email, :pass)
+-- :name insert-metric! :! :n
+-- :doc inserts a new metric record
+INSERT INTO metrics
+(timestamp, name, value)
+VALUES (:timestamp, :name, :value)
 
--- :name update-user! :! :n
--- :doc update an existing user record
-UPDATE users
-SET first_name = :first_name, last_name = :last_name, email = :email
-WHERE id = :id
+-- :name get-metric-by-timestamp :? :*
+-- :doc retrieve metric given the timestamp
+SELECT * FROM metrics
+WHERE name = :name AND timestamp = :timestamp
 
--- :name get-user :? :1
--- :doc retrieve a user given the id.
-SELECT * FROM users
-WHERE id = :id
+-- :name sum-metric-by-time-range :? :1
+-- :doc sum metric values over time range
+SELECT sum(value) AS sum FROM metrics
+WHERE name = :name
+AND timestamp BETWEEN :from AND :to
 
--- :name delete-user! :! :n
--- :doc delete a user given the id
-DELETE FROM users
-WHERE id = :id
+-- :name get-metrics :? :*
+-- :doc retrieve a page of metrics ordered by timestamp
+SELECT * FROM metrics
+ORDER BY timestamp LIMIT :limit OFFSET :offset
