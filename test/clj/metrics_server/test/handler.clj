@@ -11,25 +11,41 @@
    :timestamp (new Date)})
 
 (deftest test-app
+
   (testing "swagger redirect"
-    (let [response ((app) (request :get "/swagger-ui"))]
+    (let [request (request :get "/swagger-ui")
+          response ((app) request)]
       (is (= 302 (:status response)))))
 
   (testing "swagger ui"
-    (let [response ((app) (request :get "/swagger-ui/index.html"))]
+    (let [request (request :get "/swagger-ui/index.html")
+          response ((app) request)]
       (is (= 200 (:status response)))))
 
   (testing "not-found route"
-    (let [response ((app) (request :get "/invalid"))]
+    (let [request (request :get "/invalid")
+          response ((app) request)]
       (is (= 404 (:status response)))))
 
   (testing "insert metric route"
-    (let [response ((app) (content-type
-                            (request :post "/api/metric"
-                                     (json/generate-string input-metric))
-                            "application/json"))]
+    (let [request (content-type
+                    (request :post
+                             "/api/metric"
+                             (json/generate-string input-metric))
+                    "application/json")
+          response ((app) request)]
       (is (= 200 (:status response)))))
 
   (testing "get metric route"
-    (let [response ((app) (request :get "/api/metric" {:page 0}))]
+    (let [request (request :get
+                           "/api/metrics"
+                           {:page 0})
+          response ((app) request)]
+      (is (= 200 (:status response)))))
+
+  (testing "get metric by name and timestamp route"
+    (let [request (request :get
+                           (str "/api/metric/" (:name input-metric))
+                           {:timestamp (json/generate-string (:timestamp input-metric))})
+          response ((app) request)]
       (is (= 200 (:status response))))))

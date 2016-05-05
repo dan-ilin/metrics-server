@@ -30,8 +30,16 @@
                        :summary "Insert single metric into database."
                        (ok (db/insert-metric! metric)))
 
-                 (GET "/metric" []
+                 (GET "/metrics" []
                       :return [Metric]
-                      :query-params [page :- Long]
-                      :summary "Get page of metrics."
-                      (ok (db/get-metrics (get-page-params page))))))
+                      :query-params [page :- s/Int]
+                      :summary "Get page of metrics ordered by time."
+                      (ok (db/get-metrics (get-page-params page))))
+
+                 (GET "/metric/:name" []
+                      :return [Metric]
+                      :path-params [name :- s/Str ]
+                      :query-params [timestamp :- s/Inst]
+                      :summary "Get metric by name at given time."
+                      (ok (db/get-metric-by-timestamp {:name      name
+                                                       :timestamp timestamp})))))
