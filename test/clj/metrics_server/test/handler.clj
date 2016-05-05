@@ -48,4 +48,12 @@
                            (str "/api/metric/" (:name input-metric))
                            {:timestamp (json/generate-string (:timestamp input-metric))})
           response ((app) request)]
+      (is (= 200 (:status response)))))
+
+  (testing "get metric sum by name and time range route"
+    (let [request (request :get
+                           (str "/api/metric/" (:name input-metric) "/sum")
+                           {:from (json/generate-string (:timestamp input-metric))
+                            :to (json/generate-string (:timestamp input-metric))})
+          response ((app) request)]
       (is (= 200 (:status response))))))
