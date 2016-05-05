@@ -38,8 +38,17 @@
 
                  (GET "/metric/:name" []
                       :return [Metric]
-                      :path-params [name :- s/Str ]
+                      :path-params [name :- s/Str]
                       :query-params [timestamp :- s/Inst]
                       :summary "Get metric by name at given time."
                       (ok (db/get-metric-by-timestamp {:name      name
-                                                       :timestamp timestamp})))))
+                                                       :timestamp timestamp})))
+
+                 (GET "/metric/:name/sum" []
+                      :return s/Num
+                      :path-params [name :- s/Str]
+                      :query-params [from :- s/Inst to :- s/Inst]
+                      :summary "Get aggregate sum of metric value for given time range."
+                      (ok (:sum (db/sum-metric-by-time-range {:name name
+                                                              :from from
+                                                              :to   to}))))))
