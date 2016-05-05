@@ -59,7 +59,16 @@
                       :return s/Num
                       :path-params [name :- s/Str]
                       :query-params [from :- s/Inst to :- s/Inst]
-                      :summary "Get aggregate sum of metric value for given time range."
+                      :summary "Get aggregate sum of metric values for given time range."
                       (ok (:sum (db/sum-metric-by-time-range {:name name
+                                                              :from from
+                                                              :to   to}))))
+
+                 (GET "/metric/:name/avg" []
+                      :return s/Num
+                      :path-params [name :- s/Str]
+                      :query-params [from :- s/Inst to :- s/Inst]
+                      :summary "Get aggregate average of metric values for given time range."
+                      (ok (:sum (db/avg-metric-by-time-range {:name name
                                                               :from from
                                                               :to   to}))))))

@@ -15,6 +15,12 @@ SELECT sum(value) AS sum FROM metrics
 WHERE name = :name
 AND timestamp BETWEEN :from AND :to
 
+-- :name avg-metric-by-time-range :? :1
+-- :doc avg metric values over time range
+SELECT avg(value) AS sum FROM metrics
+WHERE name = :name
+AND timestamp BETWEEN :from AND :to
+
 -- :name get-metrics :? :*
 -- :doc retrieve a page of metrics ordered by timestamp
 SELECT name, value, timestamp FROM metrics
