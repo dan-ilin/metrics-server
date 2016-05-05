@@ -5,7 +5,7 @@
             [cheshire.core :as json])
   (:import (java.util Date)))
 
-(def test-metric
+(def input-metric
   {:name      "Test"
    :value     10.0
    :timestamp (new Date)})
@@ -26,7 +26,7 @@
   (testing "insert metric route"
     (let [response ((app) (content-type
                             (request :post "/api/metric"
-                                     (json/generate-string test-metric))
+                                     (json/generate-string input-metric))
                             "application/json"))]
       (is (= 200 (:status response)))))
 

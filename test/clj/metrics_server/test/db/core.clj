@@ -28,15 +28,31 @@
   (jdbc/with-db-transaction
     [t-conn *db*]
     (jdbc/db-set-rollback-only! t-conn)
-    (is (= 1
-           (db/insert-metric! t-conn input-metric)))
-    (is (= output-metric
-           (nth (db/get-metric-by-timestamp t-conn {:name      (:name input-metric)
-                                                    :timestamp (:timestamp input-metric)}) 0)))
-    (is (= {:sum 10.0}
-           (db/sum-metric-by-time-range t-conn {:name (:name input-metric)
-                                                :from (new Date 1462380000)
-                                                :to   (new Date 1462390000)})))
-    (is (= output-metric
-           (nth (db/get-metrics t-conn {:limit 1 :offset 0}) 0)))
-    (is (empty? (db/get-metrics t-conn {:limit 0 :offset 0})))))
+    (testing "insert-metric"
+      (is (= 1
+             (db/insert-metric! t-conn input-metric))))
+    (testing "get-metric-by-timestamp"
+      (is (= output-metric
+             (nth (db/get-metric-by-timestamp
+                    t-conn
+                    {:name      (:name input-metric)
+                     :timestamp (:timestamp input-metric)}) 0))))
+    (testing "sum-metric-by-time-range"
+      (is (= {:sum 10.0}
+             (db/sum-metric-by-time-range
+               t-conn
+               {:name (:name input-metric)
+                :from (new Date 1462380000)
+                :to   (new Date 1462390000)}))))
+    (testing "get-metrics-page"
+      (is (= output-metric
+             (nth (db/get-metrics
+                    t-conn
+                    {:limit  1
+                     :offset 0})
+                  0))))
+    (testing "empty-metrics-page "
+      (is (empty? (db/get-metrics
+                    t-conn
+                    {:limit  0
+                     :offset 0}))))))
