@@ -36,10 +36,7 @@
                        :summary "Insert multiple metrics into database."
                        (ok (jdbc/with-db-transaction
                              [t-conn db/*db*]
-                             (reduce
-                               #(+ %1 %2)
-                               0
-                               (map (partial db/insert-metric! t-conn) metrics)))))
+                             (reduce + 0 (map (partial db/insert-metric! t-conn) metrics)))))
 
                  (GET "/metrics" []
                       :return [Metric]
