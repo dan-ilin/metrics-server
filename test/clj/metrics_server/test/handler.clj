@@ -39,7 +39,7 @@
   (testing "get metric route"
     (let [request (request :get
                            "/api/metrics"
-                           {:page 0})
+                           {:page 1})
           response ((app) request)]
       (is (= 200 (:status response)))))
 

@@ -11,9 +11,10 @@
    :timestamp s/Inst})
 
 (defn get-page-params [page-num]
-  (let [page-size 50]
+  (let [page-size 50
+        offset-page-num (dec page-num)]                     ;; offset page number for 1-indexing
     {:limit  page-size
-     :offset (* page-size page-num)}))
+     :offset (* page-size offset-page-num)}))
 
 (defapi service-routes
         {:swagger {:ui   "/swagger-ui"
@@ -34,7 +35,7 @@
 
                  (GET "/metrics" []
                       :return [Metric]
-                      :query-params [page :- s/Int]
+                      :query-params [{page :- (s/constrained s/Int pos?) 1}]
                       :summary "Get page of metrics ordered by time."
                       (ok (db/get-metrics (get-page-params page))))
 
