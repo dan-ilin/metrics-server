@@ -3,8 +3,8 @@
 This project is a server that allows clients to store and query metrics via a REST API.
 The REST API is documented via Swagger (available at http://clj-metrics-server.herokuapp.com/swagger-ui/index.html).
 
-There are 2 routes provided to allow a client to POST either a single metric or an array of metrics.
-This allows the client to choose its preferred reporting style.
+There is a single route exposed to allow the client to POST metrics to the server.
+This route accepts an array of metric objects, so the client can post as many metrics as needed in a single request.
 
 In addition, there are several routes expose to allow the client to query metrics values.
 There are 5 routes for querying a single metric's aggregate values (sum, avg, count, min, max).

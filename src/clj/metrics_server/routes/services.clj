@@ -24,16 +24,10 @@
         (context "/api" []
                  :tags ["metrics"]
 
-                 (POST "/metric" []
-                       :return s/Int
-                       :body [metric Metric]
-                       :summary "Insert single metric into database."
-                       (ok (db/insert-metric! metric)))
-
                  (POST "/metrics" []
                        :return s/Int
                        :body [metrics [Metric]]
-                       :summary "Insert multiple metrics into database."
+                       :summary "Insert metrics into database."
                        (ok (jdbc/with-db-transaction
                              [t-conn db/*db*]
                              (reduce + 0 (map (partial db/insert-metric! t-conn) metrics)))))

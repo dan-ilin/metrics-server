@@ -30,8 +30,8 @@
   (testing "insert metric route"
     (let [request (content-type
                     (request :post
-                             "/api/metric"
-                             (json/generate-string input-metric))
+                             "/api/metrics"
+                             (json/generate-string [input-metric]))
                     "application/json")
           response ((app) request)]
       (is (= 200 (:status response)))))
