@@ -1,20 +1,37 @@
 # metrics-server
 
+This project is a server that allows clients to store and query metrics via a REST API.
+The REST API is documented via Swagger (available at http://clj-metrics-server.herokuapp.com/swagger-ui/index.html).
+
+There are 2 routes provided to allow a client to POST either a single metric or an array of metrics.
+This allows the client to choose its preferred reporting style.
+
+In addition, there are several routes expose to allow the client to query metrics values.
+There are 5 routes for querying a single metric's aggregate values (sum, avg, count, min, max).
+It is up to the client to choose which of these aggregate values to query for a particular metric.
+
+The server uses the Clojure [Luminus framework][1].
+The data store chosen to back this server is [PostgreSQL][3].
+
 generated using Luminus version "2.9.10.47"
 
-FIXME
+[1]: http://www.luminusweb.net
 
 ## Prerequisites
 
-You will need [Leiningen][1] 2.0 or above installed.
+You will need [Leiningen][2] 2.0 or above and [PostgreSQL][3] installed.
 
-[1]: https://github.com/technomancy/leiningen
+[2]: https://github.com/technomancy/leiningen
+
+[3]: http://www.postgresql.org/
 
 ## Running
 
 To start a web server for the application, run:
 
     lein run
+
+Make sure that both PostgreSQL is running and that the DATABASE_URL environment variable is pointing at it before starting the application.
 
 ## License
 
